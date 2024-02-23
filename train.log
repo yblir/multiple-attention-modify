@@ -1,0 +1,68 @@
+train has 720 real videos and 720 fake videos, face_info has 3600
+val has 140 real videos and 140 fake videos, face_info has 700
+******************** load model *************************
+Traceback (most recent call last):
+  File "/mnt/e/DeepFakeDetection/multiple-attention-master/train_distributed.py", line 328, in <module>
+    distributed_train(config)
+  File "/mnt/e/DeepFakeDetection/multiple-attention-master/train_distributed.py", line 322, in distributed_train
+    main_worker(config)
+  File "/mnt/e/DeepFakeDetection/multiple-attention-master/train_distributed.py", line 186, in main_worker
+    train_loss_value, train_real_acc, train_fake_acc = run(epoch, world_size, data_loader=train_loader,
+                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mnt/e/DeepFakeDetection/multiple-attention-master/train_distributed.py", line 272, in run
+    loss_pack = net(X, y, train_batch=True, AG=AG)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/miniconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1518, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/miniconda3/lib/python3.11/site-packages/torch/nn/modules/module.py", line 1527, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/miniconda3/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1515, in forward
+    inputs, kwargs = self._pre_forward(*inputs, **kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/miniconda3/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1416, in _pre_forward
+    self._sync_buffers()
+  File "/usr/miniconda3/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 2041, in _sync_buffers
+    self._sync_module_buffers(authoritative_rank)
+  File "/usr/miniconda3/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 2045, in _sync_module_buffers
+    self._default_broadcast_coalesced(authoritative_rank=authoritative_rank)
+  File "/usr/miniconda3/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 2066, in _default_broadcast_coalesced
+    self._distributed_broadcast_coalesced(bufs, bucket_size, authoritative_rank)
+  File "/usr/miniconda3/lib/python3.11/site-packages/torch/nn/parallel/distributed.py", line 1982, in _distributed_broadcast_coalesced
+    dist._broadcast_coalesced(
+RuntimeError: No backend type associated with device type cpu
+[2024-02-06 16:07:01,627] torch.distributed.elastic.multiprocessing.api: [ERROR] failed (exitcode: 1) local_rank: 0 (pid: 23462) of binary: /usr/miniconda3/bin/python3
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/usr/miniconda3/lib/python3.11/site-packages/torch/distributed/run.py", line 810, in <module>
+    main()
+  File "/usr/miniconda3/lib/python3.11/site-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 346, in wrapper
+    return f(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^
+  File "/usr/miniconda3/lib/python3.11/site-packages/torch/distributed/run.py", line 806, in main
+    run(args)
+  File "/usr/miniconda3/lib/python3.11/site-packages/torch/distributed/run.py", line 797, in run
+    elastic_launch(
+  File "/usr/miniconda3/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 134, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/miniconda3/lib/python3.11/site-packages/torch/distributed/launcher/api.py", line 264, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+============================================================
+train_distributed.py FAILED
+------------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+------------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2024-02-06_16:07:01
+  host      : Desktop-220105.localdomain
+  rank      : 0 (local_rank: 0)
+  exitcode  : 1 (pid: 23462)
+  error_file: <N/A>
+  traceback : To enable traceback see: https://pytorch.org/docs/stable/elastic/errors.html
+============================================================
