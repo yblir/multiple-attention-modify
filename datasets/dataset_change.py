@@ -129,9 +129,9 @@ class DeepfakeDataset(data.Dataset):
         # ff++
         # json_data = json.load(open(self.split_json_path, 'r'))
         if self.split == "train":
-            json_data = json.load(open("/mnt/e/DeepFakeDetection/datasets/FF++/splits/train.json", 'r'))
+            json_data = json.load(open(r"E:\localDatasets\FF++\splits\train.json", 'r'))
         else:
-            json_data = json.load(open("/mnt/e/DeepFakeDetection/datasets/FF++/splits/val.json", 'r'))
+            json_data = json.load(open(r"E:\localDatasets\FF++\splits\val.json", 'r'))
 
         self.real_names = []
         self.fake_names = []
@@ -143,7 +143,8 @@ class DeepfakeDataset(data.Dataset):
         # self.dataset_info 存储的是视频名和该视频real/fake标签, 其中视频名可能是名称,也可能是视频路径,在ff++中存储是视频名
         self.dataset_info = [[x, 'real'] for x in self.real_names]
         # "FaceShift"
-        for fake_style in ['Deepfakes', 'Face2Face', 'FaceSwap', 'NeuralTextures']:
+        # for fake_style in ['Deepfakes', 'Face2Face', 'FaceSwap', 'NeuralTextures']:
+        for fake_style in ['Deepfakes', ]:
             for x in self.fake_names:
                 self.dataset_info.append([x, fake_style])
         # # ==============================================================================
@@ -191,7 +192,7 @@ class DeepfakeDataset(data.Dataset):
         # load face bounding box information.
         # 存储人脸框信息的pkl文件
         self.face_info = pickle.load(
-                open("/mnt/e/DeepFakeDetection/multiple-attention-master/weights/ffpp_face_rects.pkl", 'rb'))
+                open("weights/ffpp_face_rects.pkl", 'rb'))
 
         print(f'{self.split} has {len(self.real_names)} real videos and '
               f'{len(self.fake_names)} fake videos, face_info has {len(self.dataset_info)}')
@@ -421,9 +422,9 @@ class DeepfakeDataset(data.Dataset):
         # ['Deepfakes', 'Face2Face', 'FaceSwap', 'NeuralTextures']
         # video_path = os.path.join(eval(f'self.{video_label}_video_dir'), video_name + '.mp4')
         if video_label == "real":
-            video_path = f"/mnt/e/DeepFakeDetection/datasets/FF++/original_sequences/youtube/c23/videos/{video_name}.mp4"
+            video_path = f"E:\localDatasets\FF++\original_sequences/youtube/c23/videos/{video_name}.mp4"
         elif video_label in ['Deepfakes', 'Face2Face', 'FaceSwap', 'NeuralTextures']:
-            video_path = f"/mnt/e/DeepFakeDetection/datasets/FF++/manipulated_sequences/{video_label}/c23/videos/{video_name}.mp4"
+            video_path = f"E:\localDatasets\FF++\manipulated_sequences/{video_label}/c23/videos/{video_name}.mp4"
         elif video_label == "dfdc_real":
             pass
         elif video_label == "dfdc_fake":

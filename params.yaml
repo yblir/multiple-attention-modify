@@ -11,7 +11,7 @@
 #  std: [0.229, 0.224, 0.225]
 
 # train,val设置相同的batch_size
-batch_size: 2
+batch_size: 6
 
 train:
   num_workers: 8
@@ -29,7 +29,7 @@ train:
 #      compression: ${compression}
       split: train
 #      num_segments设置每个视频提取的帧数量
-      num_segments: 3
+      num_segments: 2
       sparse_span: 150
 #      dense_sample:
 
@@ -44,7 +44,7 @@ test:
 #      method: ${method}
 #      compression: ${compression}
       split: val
-      num_segments: 3
+      num_segments: 2
       sparse_span: 150
 
 #model:

@@ -37,7 +37,7 @@ from logger_util import MyLogger
 # os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
 from torch.utils.tensorboard import SummaryWriter
 
-warnings.filterwarnings("ignore")
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 logger = MyLogger(log_level="INFO", bool_std=True, bool_file=True,
                   log_file_path='./log/multiple-attention.log').get_logger()
 # cv2.setNumThreads(0)
@@ -86,6 +86,7 @@ def load_state(net, ckpt):
             goodmatch = False
     net.load_state_dict(nd, strict=False)
     return goodmatch
+
 
 # todo 当前文件用于模型调试
 # def main_worker(local_rank, world_size, rank_offset, config):
@@ -194,7 +195,7 @@ def main_worker(config):
                                                                   local_rank=local_rank,
                                                                   config=config,
                                                                   AG=AG, phase='val')
-        net.module.auxiliary_loss.alpha *= config.alpha_decay
+        net.auxiliary_loss.alpha *= config.alpha_decay
         scheduler.step()
         # if local_rank == 0:
         #     writer.add_scalar("train/loss", train_loss_value, epoch)
@@ -294,17 +295,17 @@ def run(epoch, data_loader, net, optimizer, local_rank, config, AG=None, phase='
                 # loss_pack['ensemble_acc'] = ACC(loss_pack['ensemble_logit'], y)
                 # 替换原准确率计算方式,统计real,fake各自的准确率
                 acc, batch_real_acc, batch_fake_acc, batch_real_cnt, batch_fake_cnt = compute_metrics(
-                        loss_pack['ensemble_logit'], y)
+                    loss_pack['ensemble_logit'], y)
                 # temp_total_acc += float(loss_pack['ensemble_acc'].detach().cpu().numpy())
                 # print(acc)
-        if local_rank == 0 and i % 1 == 0 and i != 0:
+        if local_rank == 0 and i % 70 == 0 and i != 0:
             # print(y)
             logger.info(
-                    f"Epoch {epoch} - ({i}/{data_loader_length}), "
-                    f"acc_{round(float(acc), 4)}, "
-                    f"real_acc_{round(float(batch_real_acc), 4) if batch_real_cnt != 0 else 'NAN'}, "
-                    f"fake_acc_{round(float(batch_fake_acc), 4) if batch_fake_cnt != 0 else 'NAN'}, "
-                    f"loss_{round(float(batch_loss.detach().cpu().numpy()), 5)}"
+                f"Epoch {epoch} - ({i}/{data_loader_length}), "
+                f"acc_{round(float(acc), 4)}, "
+                f"real_acc_{round(float(batch_real_acc), 4) if batch_real_cnt != 0 else 'NAN'}, "
+                f"fake_acc_{round(float(batch_fake_acc), 4) if batch_fake_cnt != 0 else 'NAN'}, "
+                f"loss_{round(float(batch_loss.detach().cpu().numpy()), 5)}"
             )
         # for i in record_list:
         #     recorder[i].step(loss_pack[i])
@@ -314,11 +315,12 @@ def run(epoch, data_loader, net, optimizer, local_rank, config, AG=None, phase='
     ys = torch.stack(label_list)
     ys = ys.reshape(-1)
     acc, real_acc, fake_acc, real_cnt, fake_cnt = compute_metrics(outs, ys)
+    cur_flag = f"({data_loader_length}/{data_loader_length}), " if phase == 'train' else "test, "
     logger.info(
-            f"Epoch {epoch}, "
-            f"acc_{round(float(acc), 4)}, "
-            f"real_acc_{round(float(real_acc), 4) if real_cnt != 0 else 'NAN'}, "
-            f"fake_acc_{round(float(fake_acc), 4) if fake_cnt != 0 else 'NAN'}, ")
+        f"Epoch {epoch} - {cur_flag}"
+        f"acc_{round(float(acc), 4)}, "
+        f"real_acc_{round(float(real_acc), 4) if real_cnt != 0 else 'NAN'}, "
+        f"fake_acc_{round(float(fake_acc), 4) if fake_cnt != 0 else 'NAN'}, ")
     # end of this epoch
     # batch_info = []
     # for i in record_list:

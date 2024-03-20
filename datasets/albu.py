@@ -4,8 +4,8 @@ import cv2
 import numpy as np
 import torch
 from albumentations import DualTransform, ImageOnlyTransform
-from albumentations.augmentations.functional import crop
-
+# from albumentations.augmentations.functional import crop
+from albumentations.augmentations.crops.transforms import Crop as crop
 # from torchsr.models import edsr_baseline
 
 from skimage.color import rgb2hsv, rgb2gray, rgb2yuv
